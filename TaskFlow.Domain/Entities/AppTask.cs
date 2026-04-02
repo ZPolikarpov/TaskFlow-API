@@ -34,8 +34,8 @@ public class AppTask
     public static AppTask Create(
         string title, AppTaskPriority priority,
         int projectId, int ownerId,
-        string? description = string.Empty, int? AssigneeId = null, 
-        AppTaskStatus? status = AppTaskStatus.Todo, DateTimeOffset? dueDate = null
+        string? description = null, int? AssigneeId = null, 
+        AppTaskStatus status = AppTaskStatus.Todo, DateTimeOffset? dueDate = null
     )
     {
         ArgumentException.ThrowIfNullOrEmpty(title);

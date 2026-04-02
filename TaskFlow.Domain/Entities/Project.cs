@@ -25,7 +25,7 @@ public class Project
     /// <exception cref="ArgumentException">Thrown when the name is null or empty.</exception>
     public static Project Create(
         string name, int workspaceId, 
-        int ownerId, string? description = string.Empty
+        int ownerId, string? description = null
     )
     {
         ArgumentException.ThrowIfNullOrEmpty(name);
