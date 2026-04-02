@@ -28,4 +28,18 @@ public class Project
             UpdatedOn = DateTimeOffset.UtcNow
         };
     }
+
+    public void Archive()
+    {
+        IsArchived = true;
+        UpdatedOn = DateTimeOffset.UtcNow;
+    } 
+
+    public void Rename(string newName)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(newName);
+
+        Name = newName;
+        UpdatedOn = DateTimeOffset.UtcNow;
+    }
 }
