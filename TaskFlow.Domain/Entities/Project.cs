@@ -12,8 +12,8 @@ public class Project
 
     
     public static Project Create(
-        string name, string? description,
-        int workspaceId, int ownerId
+        string name, int workspaceId, 
+        int ownerId, string? description = string.Empty
     )
     {
         ArgumentException.ThrowIfNullOrEmpty(name);
@@ -21,7 +21,7 @@ public class Project
         return new Project()
         {
             Name = name.Trim(),
-            Description = description.Trim(),
+            Description = description?.Trim(),
             WorkspaceId = workspaceId,
             OwnerId = ownerId,
             CreatedOn = DateTimeOffset.UtcNow,
