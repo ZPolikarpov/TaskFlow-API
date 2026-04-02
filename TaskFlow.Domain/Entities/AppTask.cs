@@ -15,10 +15,10 @@ public class AppTask
     public DateTimeOffset UpdatedOn { get; private set; }
 
     public static AppTask Create(
-        string title, string? description,
-        AppTaskStatus status, AppTaskPriority priority,
+        string title, AppTaskPriority priority,
         int projectId, int ownerId,
-        int? AssigneeId, DateTimeOffset? dueDate
+        string? description = string.Empty, int? AssigneeId = null, 
+        AppTaskStatus? status = AppTaskStatus.Todo, DateTimeOffset? dueDate = null
     )
     {
         ArgumentException.ThrowIfNullOrEmpty(title);
@@ -26,7 +26,7 @@ public class AppTask
         return new AppTask()
         {
             Title = title.Trim(),
-            Description = description.Trim(),
+            Description = description?.Trim(),
             Status = status,
             Priority = priority,
             ProjectId = projectId,
@@ -37,5 +37,35 @@ public class AppTask
             UpdatedOn = DateTimeOffset.UtcNow
         };
     }
-    
+
+    public void Assign(int assigneeId)
+    {
+        AssigneeId = assigneeId;
+        UpdatedOn = DateTimeOffset.UtcNow;
+    }
+    public void Unassign()
+    {
+        AssigneeId = null;
+        UpdatedOn = DateTimeOffset.UtcNow;
+    }
+    public void SetStatus(AppTaskStatus status)
+    {
+        Status = status;
+        UpdatedOn = DateTimeOffset.UtcNow;
+    }
+    public void SetPriority(AppTaskPriority priority)
+    {
+        Priority = priority;
+        UpdatedOn = DateTimeOffset.UtcNow;
+    }
+    public void SetDescription(string? description)
+    {
+        Description = description?.Trim();
+        UpdatedOn = DateTimeOffset.UtcNow;
+    }
+    public void SetDueDate(DateTimeOffset? dueDate)
+    {
+        DueDate = dueDate;
+        UpdatedOn = DateTimeOffset.UtcNow;
+    }
 }
