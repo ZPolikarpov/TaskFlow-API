@@ -18,6 +18,10 @@ public class AppTask
     public DateTimeOffset CreatedOn { get; private set; }
     public DateTimeOffset UpdatedOn { get; private set; }
 
+    public Project? Project { get; private set; }
+    public User? Owner { get; private set; }
+    public User? Assignee { get; private set; }
+
     /// <summary>
     /// Creates a new instance of <see cref="AppTask"/> with the specified parameters.
     /// </summary>
