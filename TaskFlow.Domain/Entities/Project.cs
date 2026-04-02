@@ -13,6 +13,9 @@ public class Project
     public bool IsArchived { get; private set; } = false;
     public DateTimeOffset CreatedOn { get; private set; }
     public DateTimeOffset UpdatedOn { get; private set; }
+    public Workspace? Workspace { get; private set; }
+    public User? Owner { get; private set; }
+    public ICollection<AppTask> Tasks { get; private set; } = new List<AppTask>();
 
     /// <summary>
     /// Creates a new <see cref="Project"/> instance with the specified parameters.
