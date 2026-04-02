@@ -20,7 +20,7 @@ public class User
         return new User()
         {
             DisplayName = displayName.Trim(),
-            Email = email.Trim(),
+            Email = email.Trim().ToLowerInvariant(),
             Password = passwordHash,
             WorkspaceId = workspaceId,
             CreatedOn = DateTimeOffset.UtcNow

@@ -20,8 +20,8 @@ public class Project
 
         return new Project()
         {
-            Name = name,
-            Description = description,
+            Name = name.Trim(),
+            Description = description.Trim(),
             WorkspaceId = workspaceId,
             OwnerId = ownerId,
             CreatedOn = DateTimeOffset.UtcNow,
