@@ -39,11 +39,11 @@ notification delivery.
 
 ## Running locally
 
-\`\`\`bash
+```bash
 docker-compose up -d        # starts SQL Server
 dotnet ef database update   # apply migrations
 dotnet run --project TaskFlow.Api
-\`\`\`
+```
 
 ## Key endpoints
 

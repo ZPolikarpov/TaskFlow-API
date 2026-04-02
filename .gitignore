@@ -429,3 +429,6 @@ FodyWeavers.xsd
 
 appsettings.*.json
 !appsettings.example.json
+
+docker-compose.yml
+!docker-compose.example.yml
