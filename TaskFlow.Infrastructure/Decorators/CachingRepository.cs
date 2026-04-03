@@ -12,13 +12,19 @@ public class CachingRepository<T> : IRepository<T> where T : class, IEntity
         _cache = cache;
         _inner = inner;
     }
+    private static string GenerateCacheKey(int id) => $"{typeof(T).Name}:{id}";
     public async Task<T?> GetByIdAsync(int id, CancellationToken ct = default)
     {
-        _cache.TryGetValue($"{typeof(T).Name}:{id}", out T? result);
-        if (result is not null) 
-            return result;
-        result = await _inner.GetByIdAsync(id, ct);
-        _cache.Set($"{typeof(T).Name}:{id}", result, TimeSpan.FromMinutes(5));
+        var key = GenerateCacheKey(id);
+
+        if(_cache.TryGetValue(key, out T? cached))
+            return cached;
+
+        var result = await _inner.GetByIdAsync(id, ct);
+
+        if (result is not null)
+            _cache.Set(key, result, TimeSpan.FromMinutes(5));
+
         return result;
     }
 
@@ -36,14 +42,18 @@ public class CachingRepository<T> : IRepository<T> where T : class, IEntity
 
     public async Task UpdateAsync(T entity, CancellationToken ct = default)
     {
+        var key = GenerateCacheKey(entity.Id);
+
         await _inner.UpdateAsync(entity, ct);
-        _cache.Remove($"{typeof(T).Name}:{entity.Id}");
-        _cache.Set($"{typeof(T).Name}:{entity.Id}", entity, TimeSpan.FromMinutes(5));
+        _cache.Remove(key);
+        _cache.Set(key, entity, TimeSpan.FromMinutes(5));
     }
 
     public async Task DeleteAsync(int id, CancellationToken ct = default)
     {
+        var key = GenerateCacheKey(id);
+
         await _inner.DeleteAsync(id, ct);
-        _cache.Remove($"{typeof(T).Name}:{id}");
+        _cache.Remove(key);
     }
 }
