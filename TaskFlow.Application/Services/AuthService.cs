@@ -6,7 +6,7 @@ using TaskFlow.Domain.Repositories;
 
 namespace TaskFlow.Application.Services;
 
-public class AuthService
+public class AuthService : IAuthService
 {
     private readonly IUserRepository _users;
     private readonly IRepository<Workspace> _workspaces;
@@ -28,7 +28,7 @@ public class AuthService
             return Result<AuthResponse>.Conflict($"User with email {req.Email} already exists!");
 
         Workspace workspace = Workspace.Create(req.WorkspaceName);
-        workspace = await _workspaces.AddAsync(workspace);
+        workspace = await _workspaces.AddAsync(workspace, ct);
 
         var passwordHash = BCrypt.Net.BCrypt.HashPassword(req.Password);
 
@@ -38,7 +38,7 @@ public class AuthService
             passwordHash,
             workspace.Id
         );
-        await _users.AddAsync(user);
+        await _users.AddAsync(user, ct);
 
         var token = _tokenService.Issue(user);
         var expiry = _tokenService.GetExpiry();      
@@ -50,12 +50,13 @@ public class AuthService
 
     public async Task<Result<AuthResponse>> LoginAsync(RegisterRequest req, CancellationToken ct = default)
     {
-        var user = await _users.FindByEmailAsync(req.Email);
+        var user = await _users.FindByEmailAsync(req.Email, ct);
         if (user is null)
         {
-            // Hash a dummy password to mask response times
-           BCrypt.Net.BCrypt.HashPassword("DummyPassword");
-           return Result<AuthResponse>.NotFound($"Could not find user with given credentials.");
+            // Always run BCrypt even when user is null — consistent timing
+            // prevents attackers from detecting valid emails via response time
+            BCrypt.Net.BCrypt.HashPassword("DummyPassword");
+            return Result<AuthResponse>.NotFound($"Could not find user with given credentials.");
         }
 
         if (!BCrypt.Net.BCrypt.Verify(req.Password, user.PasswordHash))
