@@ -1,6 +1,8 @@
+using TaskFlow.Domain.Entities;
+
 namespace TaskFlow.Domain.Repositories;
 
-public interface IRepository<T> where T : class
+public interface IRepository<T> where T : class, IEntity
 {
     Task<T?> GetByIdAsync(int id, CancellationToken ct = default);
     Task<IEnumerable<T>> GetAllAsync(CancellationToken ct = default);

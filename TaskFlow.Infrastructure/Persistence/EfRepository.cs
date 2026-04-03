@@ -1,9 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+using TaskFlow.Domain.Entities;
 using TaskFlow.Domain.Repositories;
 
 namespace TaskFlow.Infrastructure.Persistence;
 
-public class EfRepository<T> : IRepository<T> where T : class
+public class EfRepository<T> : IRepository<T> where T : class, IEntity
 {
     public readonly AppDbContext _AppDbContext;
 

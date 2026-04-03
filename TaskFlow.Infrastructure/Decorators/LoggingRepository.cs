@@ -1,9 +1,10 @@
 using Microsoft.Extensions.Logging;
+using TaskFlow.Domain.Entities;
 using TaskFlow.Domain.Repositories;
 
 namespace TaskFlow.Infrastructure.Decorators;
 
-public class LoggingRepository<T> : IRepository<T> where T : class
+public class LoggingRepository<T> : IRepository<T> where T : class, IEntity
 {
     private readonly ILogger<LoggingRepository<T>> _logger;
     private readonly IRepository<T> _inner;
