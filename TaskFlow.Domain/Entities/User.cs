@@ -3,7 +3,7 @@ namespace TaskFlow.Domain.Entities;
 /// <summary>
 /// Represents a user within the system, including authentication and workspace association.
 /// </summary>
-public class User
+public class User : IEntity
 {
     public int Id { get; private set; }
     public string Email { get; private set; } = string.Empty;

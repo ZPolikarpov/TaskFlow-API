@@ -4,7 +4,7 @@ namespace TaskFlow.Domain.Entities;
 /// Represents a task within the system, including its metadata such as title, status,
 /// priority, ownership, assignment, and lifecycle timestamps.
 /// </summary>
-public class AppTask
+public class AppTask : IEntity
 {
     public int Id { get; private set; }
     public string Title { get; private set; } = string.Empty;

@@ -3,7 +3,7 @@ namespace TaskFlow.Domain.Entities;
 /// <summary>
 /// Represents a project within a workspace, used to group and organize related tasks.
 /// </summary>
-public class Project
+public class Project : IEntity
 {
     public int Id { get; private set; }
     public string Name { get; private set; } = string.Empty;
