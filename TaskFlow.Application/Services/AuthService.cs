@@ -50,6 +50,22 @@ public class AuthService
 
     public async Task<Result<AuthResponse>> LoginAsync(RegisterRequest req, CancellationToken ct = default)
     {
-        
+        var user = await _users.FindByEmailAsync(req.Email);
+        if (user is null)
+        {
+            // Hash a dummy password to mask response times
+           BCrypt.Net.BCrypt.HashPassword("DummyPassword");
+           return Result<AuthResponse>.NotFound($"Could not find user with given credentials.");
+        }
+
+        if (!BCrypt.Net.BCrypt.Verify(req.Password, user.PasswordHash))
+            return Result<AuthResponse>.NotFound($"Could not find user with given credentials.");
+
+        var token = _tokenService.Issue(user);
+        var expiry = _tokenService.GetExpiry();   
+
+        return Result<AuthResponse>.Success(
+            new AuthResponse(token, expiry, user.Id, user.DisplayName, user.Email)
+        );
     }
 }
