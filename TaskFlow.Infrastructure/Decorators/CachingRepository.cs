@@ -8,6 +8,7 @@ public class CachingRepository<T> : IRepository<T> where T : class, IEntity
 {
     private readonly IMemoryCache _cache;
     private readonly IRepository<T> _inner;
+    private static readonly TimeSpan CacheExpiry = TimeSpan.FromMinutes(5);
     public CachingRepository(IMemoryCache cache, IRepository<T> inner){
         _cache = cache;
         _inner = inner;
@@ -23,7 +24,7 @@ public class CachingRepository<T> : IRepository<T> where T : class, IEntity
         var result = await _inner.GetByIdAsync(id, ct);
 
         if (result is not null)
-            _cache.Set(key, result, TimeSpan.FromMinutes(5));
+            _cache.Set(key, result, CacheExpiry);
 
         return result;
     }
@@ -46,7 +47,7 @@ public class CachingRepository<T> : IRepository<T> where T : class, IEntity
 
         await _inner.UpdateAsync(entity, ct);
         _cache.Remove(key);
-        _cache.Set(key, entity, TimeSpan.FromMinutes(5));
+        _cache.Set(key, entity, CacheExpiry);
     }
 
     public async Task DeleteAsync(int id, CancellationToken ct = default)
