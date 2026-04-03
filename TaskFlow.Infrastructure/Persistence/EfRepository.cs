@@ -5,9 +5,9 @@ namespace TaskFlow.Infrastructure.Persistence;
 
 public class EfRepository<T> : IRepository<T> where T : class
 {
-    private readonly DbContext _AppDbContext;
+    public readonly AppDbContext _AppDbContext;
 
-    public EfRepository(DbContext appDbContext){
+    public EfRepository(AppDbContext appDbContext){
         _AppDbContext = appDbContext;
     }
 

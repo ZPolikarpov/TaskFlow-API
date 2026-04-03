@@ -4,5 +4,6 @@ namespace TaskFlow.Application.Interfaces;
 
 public interface ITokenService
 {
-    public string GetToken(User user);
+    string Issue(User user);
+    DateTime GetExpiry();
 }
