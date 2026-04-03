@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using TaskFlow.Application.Interfaces;
 using TaskFlow.Domain.Repositories;
 using TaskFlow.Infrastructure.Decorators;
 using TaskFlow.Infrastructure.Persistence;
@@ -19,15 +20,21 @@ public static class DependencyInjection
                 sql => sql.MigrationsAssembly("TaskFlow.Infrastructure")));
 
         services.AddMemoryCache();
+        services.AddHttpContextAccessor();
 
         services.AddScoped(typeof(IRepository<>),
             typeof(EfRepository<>));
+        services.AddScoped(typeof(EfRepository<>),
+            typeof(EfUserRepository));
+        services.AddScoped(typeof(ITokenService));
+        services.AddScoped(typeof(ICurrentUserService));
 
         services.Decorate(typeof(IRepository<>),
             typeof(LoggingRepository<>));
 
         services.Decorate(typeof(IRepository<>),
             typeof(CachingRepository<>));
+
 
         return services;
     }
