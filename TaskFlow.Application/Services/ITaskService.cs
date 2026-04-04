@@ -6,7 +6,7 @@ namespace TaskFlow.Application.Services;
 
 public interface ITaskService
 {
-    Task<Result<TaskResponse>> CreateAsync(CreateTaskRequest req, CancellationToken ct = default);
+    Task<Result<TaskResponse>> CreateAsync(CreateTaskCommand req, CancellationToken ct = default);
     Task<Result<TaskResponse>> GetByIdAsync(int taskId, CancellationToken ct = default);
     Task<Result<TaskResponse>> UpdateAsync(int taskid, UpdateTaskRequest req, CancellationToken ct = default);
     Task<Result<TaskResponse>> AssignAsync(int taskId, AssignTaskRequest req, CancellationToken ct = default);

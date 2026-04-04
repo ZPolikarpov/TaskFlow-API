@@ -22,7 +22,7 @@ public class TaskService : ITaskService
         _projects = projects;
         _currentUser = currentUser;
     }
-    public async Task<Result<TaskResponse>> CreateAsync(CreateTaskRequest req, CancellationToken ct = default)
+    public async Task<Result<TaskResponse>> CreateAsync(CreateTaskCommand req, CancellationToken ct = default)
     {
         bool projectExists = await _projects.ExistsInWorkspaceAsync(req.ProjectId, _currentUser.WorkspaceId, ct);
         if (!projectExists)

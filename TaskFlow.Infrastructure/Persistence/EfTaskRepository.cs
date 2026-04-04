@@ -25,7 +25,7 @@ public class EfTaskRepository : EfRepository<AppTask>, ITaskRepository
         var tasks = await _AppDbContext.Tasks
                             .Where(t => t.ProjectId == projectId)
                             .OrderByDescending(t => t.CreatedOn)
-                            .Skip(page*pageSize)
+                            .Skip((page-1)*pageSize)
                             .Take(pageSize)
                             .ToListAsync(ct);
         

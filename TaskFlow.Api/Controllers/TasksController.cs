@@ -54,13 +54,21 @@ public class TasksController : ControllerBase
         CreateTaskRequest request,
         CancellationToken ct)
     {
-        var requestWithProject = request with { ProjectId = projectId };
-        var result = await _tasks.CreateAsync(requestWithProject, ct);
+        var command = new CreateTaskCommand(
+            request.Title,
+            request.Priority,
+            projectId,
+            request.Description,
+            request.AssigneeId,
+            request.DueDate,
+            request.Status
+        );
+        var result = await _tasks.CreateAsync(command, ct);
         return result.ToCreatedResult(this, nameof(GetById),
             new { projectId, id = result.Value?.Id });
     }
 
-    [HttpPatch("{id:int}/update")]
+    [HttpPatch("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
