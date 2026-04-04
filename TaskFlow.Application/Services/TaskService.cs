@@ -70,6 +70,8 @@ public class TaskService : ITaskService
         if (task.OwnerId != _currentUser.UserId)
             return Result<bool>.Unauthorized($"Only the owner can delete this task!"); 
 
+        await _tasks.DeleteAsync(taskId, ct);
+
         return Result<bool>.Success(true); 
     }
     public async Task<Result<TaskResponse>> UpdateAsync(
