@@ -20,7 +20,7 @@ public class CurrentUserService : ICurrentUserService
         User?.Identity?.IsAuthenticated ?? false;
 
     public int UserId =>
-        int.Parse(User?.FindFirstValue(JwtRegisteredClaimNames.Sub)
+        int.Parse(User?.FindFirstValue(ClaimTypes.NameIdentifier)
             ?? throw new InvalidOperationException(
                 "UserId claim not present — is the endpoint protected?"));
 
@@ -30,7 +30,7 @@ public class CurrentUserService : ICurrentUserService
                 "workspace_id claim not present — is the endpoint protected?"));
 
     public string Email =>
-        User?.FindFirstValue(JwtRegisteredClaimNames.Email)
+        User?.FindFirstValue(ClaimTypes.Email)
             ?? throw new InvalidOperationException(
                 "Email claim not present — is the endpoint protected?");
 }
