@@ -1,3 +1,4 @@
+using TaskFlow.Application.BackgroundJobs;
 using TaskFlow.Application.Common;
 using TaskFlow.Application.DTOs.Requests;
 using TaskFlow.Application.DTOs.Responses;
@@ -12,15 +13,18 @@ public class TaskService : ITaskService
     private readonly ITaskRepository _tasks;
     private readonly IProjectRepository _projects;
     private readonly ICurrentUserService _currentUser;
+    private readonly INotificationQueue _notificationQueue;
     public TaskService(
         ITaskRepository tasks,
         IProjectRepository projects,
-        ICurrentUserService currentUser
+        ICurrentUserService currentUser,
+        INotificationQueue notificationQueue
     )
     {
         _tasks = tasks;
         _projects = projects;
         _currentUser = currentUser;
+        _notificationQueue = notificationQueue;
     }
     public async Task<Result<TaskResponse>> CreateAsync(CreateTaskCommand req, CancellationToken ct = default)
     {
@@ -40,7 +44,14 @@ public class TaskService : ITaskService
         );
 
         await _tasks.AddAsync(task, ct);
-
+        await _notificationQueue.EnqueueAsync(
+            new TaskCreatedNotification(
+                task.Id, 
+                task.Title, 
+                task.ProjectId, 
+                task.AssigneeId), 
+            ct
+        );
         return Result<TaskResponse>.Success(TaskResponse.From(task));
     }
     public async Task<Result<TaskResponse>> GetByIdAsync(int taskId, CancellationToken ct = default)
@@ -58,6 +69,14 @@ public class TaskService : ITaskService
             return Result<TaskResponse>.NotFound($"Task with id {taskId} could not be found!");
 
         task.Assign(req.AssigneeId);
+        await _tasks.UpdateAsync(task, ct);
+        await _notificationQueue.EnqueueAsync(
+            new TaskAssignedNotification(
+                task.Id, 
+                task.Title,
+                req.AssigneeId), 
+            ct
+        );
 
         return Result<TaskResponse>.Success(TaskResponse.From(task)); 
     }
@@ -104,7 +123,16 @@ public class TaskService : ITaskService
             task.SetDueDate(request.DueDate);
 
         await _tasks.UpdateAsync(task, ct);
-
+        if (task.Status == AppTaskStatus.Done)
+        {
+            await _notificationQueue.EnqueueAsync(
+                new TaskCompletedNotification(
+                    task.Id, 
+                    task.Title,
+                    task.OwnerId), 
+                ct
+            );
+        }
         return Result<TaskResponse>.Success(TaskResponse.From(task));
     }
     public async Task<Result<PagedResponse<TaskResponse>>> GetPagedAsync(int projectId, int page, int pageSize, CancellationToken ct = default)
