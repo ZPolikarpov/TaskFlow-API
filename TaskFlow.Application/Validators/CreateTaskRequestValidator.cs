@@ -16,15 +16,19 @@ public class CreateTaskRequestValidator : AbstractValidator<CreateTaskRequest>
             .IsInEnum();
 
         RuleFor(x => x.DueDate)
-            .GreaterThan(DateTimeOffset.UtcNow).When(x => x.DueDate.HasValue);
+            .GreaterThan(DateTimeOffset.UtcNow)
+            .WithMessage("Due date must be in the future")
+            .When(x => x.DueDate.HasValue);
 
         RuleFor(x => x.ProjectId)
             .NotEmpty();
 
         RuleFor(x => x.Description)
-            .MaximumLength(5000).When(x => x.Description is not null);
+            .MaximumLength(5000)
+            .When(x => x.Description is not null);
 
         RuleFor(x => x.Status)
-            .IsInEnum().When(x => x.Status.HasValue);
+            .IsInEnum()
+            .When(x => x.Status.HasValue);
     }
 }

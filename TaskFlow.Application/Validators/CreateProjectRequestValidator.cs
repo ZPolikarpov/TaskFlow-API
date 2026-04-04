@@ -12,6 +12,7 @@ public class CreateProjectRequestValidator : AbstractValidator<CreateProjectRequ
             .MaximumLength(200);
 
         RuleFor(x => x.Description)
-            .MaximumLength(1000).When(x => x.Description is not null);
+            .MaximumLength(1000)
+            .When(x => x.Description is not null);
     }
 }
