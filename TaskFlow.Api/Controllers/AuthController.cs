@@ -41,7 +41,7 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     public async Task<IActionResult> Login(
-        RegisterRequest request, CancellationToken ct)
+        LoginRequest request, CancellationToken ct)
     {
         var result = await _auth.LoginAsync(request, ct);
 

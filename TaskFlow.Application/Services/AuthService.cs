@@ -49,7 +49,7 @@ public class AuthService : IAuthService
         );
     }
 
-    public async Task<Result<AuthResponse>> LoginAsync(RegisterRequest req, CancellationToken ct = default)
+    public async Task<Result<AuthResponse>> LoginAsync(LoginRequest req, CancellationToken ct = default)
     {
         var user = await _users.FindByEmailAsync(req.Email, ct);
         if (user is null)
