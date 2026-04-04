@@ -39,11 +39,17 @@ public static class DependencyInjection
 
         // Domain-specific repositories
         services.AddScoped<IUserRepository, EfUserRepository>();
+        services.AddScoped<IProjectRepository, EfProjectRepository>();
+        services.AddScoped<ITaskRepository, EfTaskRepository>();
        
         // Auth services
         services.AddScoped<ITokenService, JwtTokenService>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddScoped<IAuthService, AuthService>();
+
+        // Application services
+        services.AddScoped<IProjectService, ProjectService>();
+        services.AddScoped<ITaskService, TaskService>();
 
         // JWT authentication
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
