@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TaskFlow.Application.Common;
@@ -7,7 +8,8 @@ using TaskFlow.Application.Services;
 namespace TaskFlow.Api.Controllers;
 
 [ApiController]
-[Route("api/v1/auth")]
+[ApiVersion(1)]
+[Route("api/v{version:apiVersion}/auth")]
 [AllowAnonymous]
 public class AuthController : ControllerBase
 {
