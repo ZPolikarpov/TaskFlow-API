@@ -22,7 +22,7 @@ public class ProjectsController : ControllerBase
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAll(CancellationToken ct)
+    public async Task<IActionResult> GetAll(CancellationToken ct = default)
     {
         var result = await _projects.GetAllAsync(ct);
         return result.ToActionResult(this);
@@ -31,7 +31,7 @@ public class ProjectsController : ControllerBase
     [HttpGet("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetById(int id, CancellationToken ct)
+    public async Task<IActionResult> GetById(int id, CancellationToken ct = default)
     {
         var result = await _projects.GetByIdAsync(id, ct);
         return result.ToActionResult(this);
@@ -40,7 +40,8 @@ public class ProjectsController : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Create(CreateProjectRequest request, CancellationToken ct)
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    public async Task<IActionResult> Create(CreateProjectRequest request, CancellationToken ct = default)
     {
         var result = await _projects.CreateAsync(request, ct);
         return result.ToCreatedResult(this, nameof(GetById),
@@ -51,7 +52,7 @@ public class ProjectsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Archive(int id, CancellationToken ct)
+    public async Task<IActionResult> Archive(int id, CancellationToken ct = default)
     {
         var result = await _projects.ArchiveAsync(id, ct);
         return result.ToActionResult(this);
