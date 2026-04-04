@@ -1,11 +1,14 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using TaskFlow.Application.Interfaces;
 using TaskFlow.Application.Services;
+using TaskFlow.Domain.Entities;
 using TaskFlow.Domain.Repositories;
 using TaskFlow.Infrastructure.Auth;
 using TaskFlow.Infrastructure.Decorators;
@@ -29,13 +32,10 @@ public static class DependencyInjection
         services.AddHttpContextAccessor();
 
         // Generic repository with decorator stack
-        services.AddScoped(typeof(EfRepository<>));
-        services.AddScoped(typeof(IRepository<>),
-            typeof(EfRepository<>));
-        services.Decorate(typeof(IRepository<>),
-            typeof(LoggingRepository<>));
-        services.Decorate(typeof(IRepository<>),
-            typeof(CachingRepository<>));
+        AddDecoratedRepository<User>     (services);
+        AddDecoratedRepository<Workspace>(services);
+        AddDecoratedRepository<Project>  (services);
+        AddDecoratedRepository<AppTask>  (services);
 
         // Domain-specific repositories
         services.AddScoped<IUserRepository, EfUserRepository>();
@@ -45,9 +45,9 @@ public static class DependencyInjection
         // Auth services
         services.AddScoped<ITokenService, JwtTokenService>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
-        services.AddScoped<IAuthService, AuthService>();
 
         // Application services
+        services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IProjectService, ProjectService>();
         services.AddScoped<ITaskService, TaskService>();
 
@@ -67,9 +67,43 @@ public static class DependencyInjection
                     ValidateLifetime = true,
                     ClockSkew        = TimeSpan.FromSeconds(30)
                 };
+                opts.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = ctx =>
+                    {
+                        var logger = ctx.HttpContext.RequestServices
+                            .GetRequiredService<ILogger<JwtBearerEvents>>();
+                        logger.LogWarning(
+                            "JWT authentication failed: {Error}",
+                            ctx.Exception.Message);
+                        return Task.CompletedTask;
+                    }
+                };
             });
 
         services.AddAuthorization();
+
+        return services;
+    }
+    private static IServiceCollection AddDecoratedRepository<TEntity>(
+        IServiceCollection services)
+        where TEntity : class, IEntity
+    {
+        // Register concrete EF implementation so the factory can resolve it
+        services.AddScoped<EfRepository<TEntity>>();
+
+        // Build the decorator chain manually but generically
+        services.AddScoped<IRepository<TEntity>>(sp =>
+        {
+            var inner  = sp.GetRequiredService<EfRepository<TEntity>>();
+            var logger = sp.GetRequiredService<ILogger<LoggingRepository<TEntity>>>();
+            var cache  = sp.GetRequiredService<IMemoryCache>();
+
+            return new CachingRepository<TEntity>(
+                cache,
+                new LoggingRepository<TEntity>(logger, inner)
+                );
+        });
 
         return services;
     }

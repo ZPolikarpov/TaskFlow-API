@@ -30,8 +30,13 @@ services.AddApiVersioning(opts =>
     opts.SubstituteApiVersionInUrl = true;
 });
 
-services.AddSwaggerGen();
-services.ConfigureOptions<ConfigureSwaggerOptions>();
+// Swagger
+builder.Services.AddSwaggerGen();
+builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
+
+// Error handling
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 var app = builder.Build();
 
