@@ -65,7 +65,7 @@ public class TasksController : ControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> Complete(
+    public async Task<IActionResult> Update(
         int projectId, int id, 
         UpdateTaskRequest req, 
         CancellationToken ct)
