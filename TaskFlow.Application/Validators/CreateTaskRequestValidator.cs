@@ -26,7 +26,7 @@ public class CreateTaskRequestValidator : AbstractValidator<CreateTaskRequest>
             .When(x => x.Description is not null);
 
         RuleFor(x => x.Status)
-            .Must(x => Enum.IsDefined(typeof(AppTaskStatus), x))
+            .Must(x => Enum.IsDefined(typeof(AppTaskStatus), x!))
             .WithMessage("Status must be a valid value (0=ToDo, 1=InProgress, 2=InReview, 3=Done)")
             .When(x => x.Status.HasValue);
     }

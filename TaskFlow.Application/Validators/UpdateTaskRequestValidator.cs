@@ -18,12 +18,12 @@ public class UpdateTaskRequestValidator : AbstractValidator<UpdateTaskRequest>
             .When(x => x.DueDate.HasValue);
 
         RuleFor(x => x.Priority)
-            .Must(x => Enum.IsDefined(typeof(AppTaskPriority), x))
+            .Must(x => Enum.IsDefined(typeof(AppTaskPriority), x!))
             .WithMessage("Priority must be a valid value (0=Low, 1=Medium, 2=High, 3=Critical)")
             .When(x => x.Priority.HasValue);
 
         RuleFor(x => x.Status)
-            .Must(x => Enum.IsDefined(typeof(AppTaskStatus), x))
+            .Must(x => Enum.IsDefined(typeof(AppTaskStatus), x!))
             .WithMessage("Status must be a valid value (0=ToDo, 1=InProgress, 2=InReview, 3=Done)")
             .When(x => x.Status.HasValue);
 
