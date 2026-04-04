@@ -50,12 +50,16 @@ app.MapControllers();
 
 if (app.Environment.IsDevelopment())
 {
+    app.UseSwagger(); 
     app.UseSwaggerUI(opts =>
     {
         foreach (var desc in app.DescribeApiVersions())
             opts.SwaggerEndpoint(
                 $"/swagger/{desc.GroupName}/swagger.json",
                 desc.GroupName);
+
+        opts.DefaultModelsExpandDepth(-1);
+        opts.DisplayRequestDuration();
     });
 }
 
