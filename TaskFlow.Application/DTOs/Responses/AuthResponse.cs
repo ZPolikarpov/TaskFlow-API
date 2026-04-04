@@ -1,4 +1,4 @@
-namespace TaskFlow.Application.DTOs.Requests;
+namespace TaskFlow.Application.DTOs.Responses;
 
 public record AuthResponse(
     string Token,
