@@ -44,14 +44,18 @@ public class TaskService : ITaskService
         );
 
         await _tasks.AddAsync(task, ct);
-        await _notificationQueue.EnqueueAsync(
-            new TaskCreatedNotification(
-                task.Id, 
-                task.Title, 
-                task.ProjectId, 
-                task.AssigneeId), 
-            ct
-        );
+
+        if (task.AssigneeId is not null)
+        {
+            await _notificationQueue.EnqueueAsync(
+                new TaskCreatedNotification(
+                    task.Id, 
+                    task.Title, 
+                    task.ProjectId, 
+                    task.AssigneeId), 
+                ct
+            );
+        }
         return Result<TaskResponse>.Success(TaskResponse.From(task));
     }
     public async Task<Result<TaskResponse>> GetByIdAsync(int taskId, CancellationToken ct = default)
