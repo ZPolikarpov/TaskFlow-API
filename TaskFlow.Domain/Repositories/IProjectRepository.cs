@@ -1,8 +1,8 @@
 using TaskFlow.Domain.Entities;
 namespace TaskFlow.Domain.Repositories;
 
-public interface ITaskRepository : IRepository<Project>
+public interface IProjectRepository : IRepository<Project>
 {
-    Task<IEnumerable<Project>> GetByWorkspaceAsync(int workspaceId);  
-    Task<bool> ExistsAsync(int projectId, int workspaceId); 
+    Task<IEnumerable<Project>> GetByWorkspaceAsync(int workspaceId, CancellationToken ct = default);  
+    Task<bool> ExistsInWorkspaceAsync(int projectId, int workspaceId, CancellationToken ct = default);
 }
