@@ -6,12 +6,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using TaskFlow.Application.BackgroundJobs;
 using TaskFlow.Application.Interfaces;
 using TaskFlow.Application.Services;
 using TaskFlow.Domain.Entities;
 using TaskFlow.Domain.Repositories;
 using TaskFlow.Infrastructure.Auth;
 using TaskFlow.Infrastructure.Decorators;
+using TaskFlow.Infrastructure.Notifications;
 using TaskFlow.Infrastructure.Persistence;
 
 namespace TaskFlow.Infrastructure;
@@ -50,6 +52,16 @@ public static class DependencyInjection
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IProjectService, ProjectService>();
         services.AddScoped<ITaskService, TaskService>();
+
+        // Notification services
+        services.AddSingleton<INotificationQueue, NotificationQueue>();
+        services.AddHostedService<NotificationProcessor>();
+        services.AddScoped<INotificationHandler<TaskCreatedNotification>,
+            TaskCreatedNotificationHandler>();
+        services.AddScoped<INotificationHandler<TaskCompletedNotification>,
+            TaskCompletedNotificationHandler>();
+        services.AddScoped<INotificationHandler<TaskAssignedNotification>,
+            TaskAssignedNotificationHandler>();
 
         // JWT authentication
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
