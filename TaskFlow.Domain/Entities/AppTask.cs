@@ -38,8 +38,8 @@ public class AppTask : IEntity
     public static AppTask Create(
         string title, AppTaskPriority priority,
         int projectId, int ownerId,
-        string? description = null, int? AssigneeId = null, 
-        AppTaskStatus status = AppTaskStatus.Todo, DateTimeOffset? dueDate = null
+        AppTaskStatus? status, string? description = null, 
+        int? AssigneeId = null, DateTimeOffset? dueDate = null
     )
     {
         ArgumentException.ThrowIfNullOrEmpty(title);
@@ -48,7 +48,7 @@ public class AppTask : IEntity
         {
             Title = title.Trim(),
             Description = description?.Trim(),
-            Status = status,
+            Status = status ?? AppTaskStatus.Todo,
             Priority = priority,
             ProjectId = projectId,
             OwnerId = ownerId,
@@ -98,6 +98,15 @@ public class AppTask : IEntity
         UpdatedOn = DateTimeOffset.UtcNow;
     }
 
+    /// <summary>
+    /// Updates the description of the task.
+    /// </summary>
+    /// <param name="description">The new description, or null to clear it.</param>
+    public void SetTitle(string title)
+    {
+        Title = title.Trim();
+        UpdatedOn = DateTimeOffset.UtcNow;
+    }
     /// <summary>
     /// Updates the description of the task.
     /// </summary>

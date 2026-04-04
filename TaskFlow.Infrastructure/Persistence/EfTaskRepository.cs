@@ -31,4 +31,12 @@ public class EfTaskRepository : EfRepository<AppTask>, ITaskRepository
         
         return (tasks, totalCount);
     }
+
+    public override async Task<AppTask?> GetByIdAsync(int id, CancellationToken ct = default)
+    {
+        return await _AppDbContext.Tasks
+            .Include(t => t.Project)
+                .ThenInclude(p => p!.Workspace)
+            .FirstOrDefaultAsync(t => t.Id == id, ct);
+    }
 }

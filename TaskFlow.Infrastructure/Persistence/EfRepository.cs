@@ -12,7 +12,7 @@ public class EfRepository<T> : IRepository<T> where T : class, IEntity
         _AppDbContext = appDbContext;
     }
 
-    public async Task<T?> GetByIdAsync(int id, CancellationToken ct = default)
+    public virtual async Task<T?> GetByIdAsync(int id, CancellationToken ct = default)
     {
         return await _AppDbContext.Set<T>().FindAsync([id], ct);
     }
