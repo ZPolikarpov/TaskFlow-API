@@ -1,6 +1,9 @@
 using Asp.Versioning;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using TaskFlow.Api.HealthChecks;
 using TaskFlow.Api.Infrastructure;
 using TaskFlow.Api.Middleware;
 using TaskFlow.Application.Validators;
@@ -38,6 +41,9 @@ builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
+builder.Services.AddHealthChecks()
+    .AddCheck<DatabaseHealthCheck>("database");
+
 var app = builder.Build();
 
 app.UseExceptionHandler();
@@ -47,6 +53,10 @@ app.UseMiddleware<RequestTimingMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
 if (app.Environment.IsDevelopment())
 {
