@@ -7,7 +7,7 @@ public record CreateTaskRequest(
     AppTaskPriority Priority,
     string? Description,
     int? AssigneeId,
-    DateTimeOffset? DueDate,
+    DateTime? DueDate,
     AppTaskStatus? Status);
 
 public record CreateTaskCommand(
@@ -16,5 +16,5 @@ public record CreateTaskCommand(
     int ProjectId, 
     string? Description,
     int? AssigneeId,
-    DateTimeOffset? DueDate,
+    DateTime? DueDate,
     AppTaskStatus? Status);

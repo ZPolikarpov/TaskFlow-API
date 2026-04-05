@@ -6,5 +6,5 @@ public record UpdateTaskRequest(
     string? Title, 
     AppTaskPriority? Priority,
     string? Description,
-    DateTimeOffset? DueDate,
+    DateTime? DueDate,
     AppTaskStatus? Status);

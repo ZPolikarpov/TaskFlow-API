@@ -17,7 +17,7 @@ public class CreateTaskRequestValidator : AbstractValidator<CreateTaskRequest>
             .WithMessage("Priority must be a valid value (0=Low, 1=Medium, 2=High, 3=Critical)");
 
         RuleFor(x => x.DueDate)
-            .GreaterThan(DateTimeOffset.UtcNow)
+            .GreaterThan(DateTime.UtcNow)
             .WithMessage("Due date must be in the future")
             .When(x => x.DueDate.HasValue);
 

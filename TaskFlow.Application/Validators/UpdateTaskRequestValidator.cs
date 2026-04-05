@@ -13,7 +13,7 @@ public class UpdateTaskRequestValidator : AbstractValidator<UpdateTaskRequest>
             .When(x => x.Title is not null);
 
         RuleFor(x => x.DueDate)
-            .GreaterThan(DateTimeOffset.UtcNow)
+            .GreaterThan(DateTime.UtcNow)
             .WithMessage("Due date must be in the future")
             .When(x => x.DueDate.HasValue);
 

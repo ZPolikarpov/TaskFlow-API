@@ -10,7 +10,7 @@ public class User : IEntity
     public string DisplayName { get; private set; } = string.Empty;
     public string PasswordHash { get; private set; } = string.Empty;
     public int WorkspaceId { get; private set; }
-    public DateTimeOffset CreatedOn { get; private set; }
+    public DateTime CreatedOn { get; private set; }
 
     /// <summary>
     /// Creates a new <see cref="User"/> instance with the specified credentials and profile information.
@@ -38,7 +38,7 @@ public class User : IEntity
             Email = email.Trim().ToLowerInvariant(),
             PasswordHash = passwordHash,
             WorkspaceId = workspaceId,
-            CreatedOn = DateTimeOffset.UtcNow
+            CreatedOn = DateTime.UtcNow
         };
     }
 }

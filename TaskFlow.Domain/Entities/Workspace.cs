@@ -8,7 +8,7 @@ public class Workspace : IEntity
     public int Id { get; private set; }
     public string Name { get; private set; } = string.Empty;
     public string Slug { get; private set; } = string.Empty;
-    public DateTimeOffset CreatedOn { get; private set; }
+    public DateTime CreatedOn { get; private set; }
     public ICollection<User> Members { get; private set; } = new List<User>();
     public ICollection<Project> Projects { get; private set; } = new List<Project>();
     private Workspace() { }
@@ -27,7 +27,7 @@ public class Workspace : IEntity
         {
             Name = name.Trim(),
             Slug = GenerateSlug(name),
-            CreatedOn = DateTimeOffset.UtcNow
+            CreatedOn = DateTime.UtcNow
         };
     }
 
@@ -36,8 +36,15 @@ public class Workspace : IEntity
     /// </summary>
     /// <param name="name">The name to convert into a slug.</param>
     /// <returns>A lowercase, hyphen-separated string suitable for URLs.</returns>
-    private static string GenerateSlug(string name) =>
-        name.Trim().ToLowerInvariant()
+    private static string GenerateSlug(string name) 
+    {
+        var baseSlug = name.Trim().ToLowerInvariant()
             .Replace(" ", "-")
             .Replace("_", "-");
+
+        // Take first 8 characters of a new Guid — short but unique enough
+        var uniqueSuffix = Guid.NewGuid().ToString("N")[..8];
+
+        return $"{baseSlug}-{uniqueSuffix}";
+    }
 }

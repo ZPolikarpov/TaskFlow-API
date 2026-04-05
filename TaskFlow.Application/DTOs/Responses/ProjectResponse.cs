@@ -10,8 +10,8 @@ public record ProjectResponse(
     int OwnerId,
     string OwnerDisplayName,
     bool IsArchived,
-    DateTimeOffset CreatedOn,
-    DateTimeOffset UpdatedOn
+    DateTime CreatedOn,
+    DateTime UpdatedOn
     )
 {
     public static ProjectResponse From(Project project) => new(

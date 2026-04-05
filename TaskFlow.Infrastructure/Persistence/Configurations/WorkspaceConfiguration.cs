@@ -16,7 +16,7 @@ public class WorkspaceConfiguration : IEntityTypeConfiguration<Workspace>
 
         builder.Property(w => w.Slug)
             .IsRequired()
-            .HasMaxLength(100);
+            .HasMaxLength(120);
 
         builder.HasIndex(w => w.Slug)
             .IsUnique();

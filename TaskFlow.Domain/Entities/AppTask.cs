@@ -14,9 +14,9 @@ public class AppTask : IEntity
     public int ProjectId { get; private set; }
     public int OwnerId { get; private set; }
     public int? AssigneeId { get; private set; }
-    public DateTimeOffset? DueDate { get; private set; }
-    public DateTimeOffset CreatedOn { get; private set; }
-    public DateTimeOffset UpdatedOn { get; private set; }
+    public DateTime? DueDate { get; private set; }
+    public DateTime CreatedOn { get; private set; }
+    public DateTime UpdatedOn { get; private set; }
 
     public Project? Project { get; private set; }
     public User? Owner { get; private set; }
@@ -39,7 +39,7 @@ public class AppTask : IEntity
         string title, AppTaskPriority priority,
         int projectId, int ownerId,
         AppTaskStatus? status, string? description = null, 
-        int? AssigneeId = null, DateTimeOffset? dueDate = null
+        int? AssigneeId = null, DateTime? dueDate = null
     )
     {
         ArgumentException.ThrowIfNullOrEmpty(title);
@@ -54,8 +54,8 @@ public class AppTask : IEntity
             OwnerId = ownerId,
             AssigneeId = AssigneeId,
             DueDate = dueDate,
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow
+            CreatedOn = DateTime.UtcNow,
+            UpdatedOn = DateTime.UtcNow
         };
     }
 
@@ -66,7 +66,7 @@ public class AppTask : IEntity
     public void Assign(int assigneeId)
     {
         AssigneeId = assigneeId;
-        UpdatedOn = DateTimeOffset.UtcNow;
+        UpdatedOn = DateTime.UtcNow;
     }
 
     /// <summary>
@@ -75,7 +75,7 @@ public class AppTask : IEntity
     public void Unassign()
     {
         AssigneeId = null;
-        UpdatedOn = DateTimeOffset.UtcNow;
+        UpdatedOn = DateTime.UtcNow;
     }
 
     /// <summary>
@@ -85,7 +85,7 @@ public class AppTask : IEntity
     public void SetStatus(AppTaskStatus status)
     {
         Status = status;
-        UpdatedOn = DateTimeOffset.UtcNow;
+        UpdatedOn = DateTime.UtcNow;
     }
 
     /// <summary>
@@ -95,7 +95,7 @@ public class AppTask : IEntity
     public void SetPriority(AppTaskPriority priority)
     {
         Priority = priority;
-        UpdatedOn = DateTimeOffset.UtcNow;
+        UpdatedOn = DateTime.UtcNow;
     }
 
     /// <summary>
@@ -105,7 +105,7 @@ public class AppTask : IEntity
     public void SetTitle(string title)
     {
         Title = title.Trim();
-        UpdatedOn = DateTimeOffset.UtcNow;
+        UpdatedOn = DateTime.UtcNow;
     }
     /// <summary>
     /// Updates the description of the task.
@@ -114,16 +114,16 @@ public class AppTask : IEntity
     public void SetDescription(string? description)
     {
         Description = description?.Trim();
-        UpdatedOn = DateTimeOffset.UtcNow;
+        UpdatedOn = DateTime.UtcNow;
     }
 
     /// <summary>
     /// Sets or updates the due date of the task.
     /// </summary>
     /// <param name="dueDate">The new due date, or null to remove it.</param>
-    public void SetDueDate(DateTimeOffset? dueDate)
+    public void SetDueDate(DateTime? dueDate)
     {
         DueDate = dueDate;
-        UpdatedOn = DateTimeOffset.UtcNow;
+        UpdatedOn = DateTime.UtcNow;
     }
 }

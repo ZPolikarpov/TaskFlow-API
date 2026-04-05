@@ -11,8 +11,8 @@ public class Project : IEntity
     public int WorkspaceId { get; private set; }
     public int OwnerId { get; private set; }
     public bool IsArchived { get; private set; } = false;
-    public DateTimeOffset CreatedOn { get; private set; }
-    public DateTimeOffset UpdatedOn { get; private set; }
+    public DateTime CreatedOn { get; private set; }
+    public DateTime UpdatedOn { get; private set; }
     public Workspace? Workspace { get; private set; }
     public User? Owner { get; private set; }
     public ICollection<AppTask> Tasks { get; private set; } = new List<AppTask>();
@@ -39,8 +39,8 @@ public class Project : IEntity
             Description = description?.Trim(),
             WorkspaceId = workspaceId,
             OwnerId = ownerId,
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow
+            CreatedOn = DateTime.UtcNow,
+            UpdatedOn = DateTime.UtcNow
         };
     }
 
@@ -50,7 +50,7 @@ public class Project : IEntity
     public void Archive()
     {
         IsArchived = true;
-        UpdatedOn = DateTimeOffset.UtcNow;
+        UpdatedOn = DateTime.UtcNow;
     } 
 
     /// <summary>
@@ -63,6 +63,6 @@ public class Project : IEntity
         ArgumentException.ThrowIfNullOrEmpty(newName);
 
         Name = newName;
-        UpdatedOn = DateTimeOffset.UtcNow;
+        UpdatedOn = DateTime.UtcNow;
     }
 }

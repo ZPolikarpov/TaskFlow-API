@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using TaskFlow.Infrastructure.Persistence;
 
@@ -8,30 +10,41 @@ namespace TaskFlow.Tests.Infrastructure;
 
 public class TaskFlowWebApplicationFactory : WebApplicationFactory<Program>
 {
+    private readonly SqliteConnection _connection =
+        new SqliteConnection("DataSource=:memory:");
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        builder.UseEnvironment("Testing");
+
         builder.ConfigureServices(services =>
         {
-            // Remove the real SQL Server DbContext registration
-            var descriptor = services.SingleOrDefault(d =>
-                d.ServiceType == typeof(DbContextOptions<AppDbContext>));
+            // Remove all SQL Server DbContext registrations
+            var descriptorsToRemove = services
+                .Where(d =>
+                    d.ServiceType == typeof(DbContextOptions<AppDbContext>)  ||
+                    d.ServiceType == typeof(DbContextOptions)                ||
+                    d.ServiceType == typeof(AppDbContext)                    ||
+                    d.ServiceType == typeof(
+                        IDbContextOptionsConfiguration<AppDbContext>))
+                .ToList();
 
-            if (descriptor is not null)
+            foreach (var descriptor in descriptorsToRemove)
                 services.Remove(descriptor);
 
-            // Replace with SQLite in-memory
+            // Use the shared connection — all contexts share the same
+            // in-memory database because they share the same connection
             services.AddDbContext<AppDbContext>(opts =>
-                opts.UseSqlite("DataSource=:memory:"));
+                opts.UseSqlite(_connection));
 
-            // Ensure the schema is created for each factory instance
+            // Create schema using the shared connection
             var sp = services.BuildServiceProvider();
             using var scope = sp.CreateScope();
-            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            db.Database.OpenConnection(); // keep connection alive for in-memory
+            var db = scope.ServiceProvider
+                .GetRequiredService<AppDbContext>();
+                
+            db.Database.OpenConnection();
             db.Database.EnsureCreated();
         });
-
-        // Use test-specific configuration
-        builder.UseEnvironment("Testing");
     }
 }

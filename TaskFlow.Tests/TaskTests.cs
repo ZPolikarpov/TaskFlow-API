@@ -138,7 +138,7 @@ public class TaskTests : IClassFixture<TaskFlowWebApplicationFactory>
     }
 
     [Fact]
-    public async Task DeleteTask_AsNonOwner_Returns404()
+    public async Task DeleteTask_AsNonOwner_Returns401()
     {
         var (projectId, _) = await SetupProjectAsync(
             "task-owner@test.com", "Owner Workspace");
@@ -159,7 +159,7 @@ public class TaskTests : IClassFixture<TaskFlowWebApplicationFactory>
         var response = await _client.DeleteAsync(
             $"/api/v1/projects/{projectId}/tasks/{task!.Id}");
 
-        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
 
     private record ProjectDto(int Id);

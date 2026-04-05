@@ -9,9 +9,9 @@ public record TaskResponse(
     string Status,
     string Priority,
     int OwnerId,
-    DateTimeOffset CreatedOn,
-    DateTimeOffset UpdatedOn,
-    DateTimeOffset? DueDate,
+    DateTime CreatedOn,
+    DateTime UpdatedOn,
+    DateTime? DueDate,
     string? Description,
     int? AssigneeId,
     string? AssigneeDisplayName
