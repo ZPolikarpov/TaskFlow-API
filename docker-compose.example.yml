@@ -1,13 +1,48 @@
 services:
+
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
-      SA_PASSWORD: "YourDBPassword"
+      SA_PASSWORD: "YourStrong!Passw0rd"
       ACCEPT_EULA: "Y"
     ports:
-      - "XXXX:XXXX"
+      - "1433:1433"
     volumes:
       - sqlserver_data:/var/opt/mssql
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa
+           -P 'YourStrong!Passw0rd' -Q 'SELECT 1' -No"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  api:
+    build:
+      context: .
+      dockerfile: TaskFlow.Api/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Production"
+      APPLY_MIGRATIONS: "true"
+      ConnectionStrings__Default: >
+        Server=sqlserver,1433;
+        Database=TaskFlow;
+        User Id=sa;
+        Password=YourStrong!Passw0rd;
+        TrustServerCertificate=True
+      Jwt__Secret: "docker-compose-secret-minimum-32-characters"
+      Jwt__Issuer: "https://taskflow.api"
+      Jwt__Audience: "https://taskflow.client"
+      Jwt__ExpiryHours: "1"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
 
 volumes:
   sqlserver_data:
